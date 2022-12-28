@@ -1,7 +1,7 @@
 
 // state for productReducer
 
-const { createStore } = require("redux");
+const { createStore, combineReducers } = require("redux");
 
 /* declare products constants */
 const GET_PRODUCTS = "GET_PRODUCTS";
@@ -55,7 +55,9 @@ const productReducer = (state=initialProducts, action) => {
                 ...state,
                 products:[...state.products, action.payload],
                 numberOfProducts: state.numberOfProducts + 1,
-            }
+            };
+        default:
+            return state;
     }
 };
 // cart reducer
@@ -71,23 +73,25 @@ const cartReducer = (state=initialCart, action) => {
                 cartProducts: [...state.cartProducts, action.payload],
                 numberOfCartProducts: state.numberOfCartProducts + 1,
             }
+        default:
+            return state;
     }
-}
+};
 
-// create product store
-const productStore = createStore(productReducer);
-// create cart store
-const cartStore = createStore(cartReducer);
+// create rootReducer for multiple reducer
+const rootReducer = combineReducers({
+    productR: productReducer,
+    cartR: cartReducer
+});
+
+// create store
+const store = createStore(rootReducer);
+
 // subscribe and getState() for product Reducer
-productStore.subscribe(() => {
-    console.log(productStore.getState());
+store.subscribe(() => {
+    console.log(store.getState());
 });
-// subscribe() and getState() for cart reducer
-cartStore.subscribe(() => {
-    console.log(cartStore.getState());
-});
-productStore.dispatch(getProducts());
-productStore.dispatch(addProduct('Bananna'));
-// dispatch() for cart Reducer;
-cartStore.dispatch(getCart());
-cartStore.dispatch(addToCart('apple'));
+store.dispatch(getProducts());
+store.dispatch(addProduct('Bananna'));
+store.dispatch(getCart());
+store.dispatch(addToCart('apple'));
