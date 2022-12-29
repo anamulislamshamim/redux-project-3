@@ -1,7 +1,8 @@
 
 // state for productReducer
 
-const { createStore, combineReducers } = require("redux");
+const { createStore, combineReducers, applyMiddleware } = require("redux");
+const { default: logger } = require("redux-logger");
 
 /* declare products constants */
 const GET_PRODUCTS = "GET_PRODUCTS";
@@ -85,7 +86,7 @@ const rootReducer = combineReducers({
 });
 
 // create store
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(logger));
 
 // subscribe and getState() for product Reducer
 store.subscribe(() => {
